@@ -1,20 +1,37 @@
 export default class VimStatusBar {
+  /**
+   * @param {!Element} node
+   * @param {!monaco.editor.IStandaloneCodeEditor} editor
+   */
   constructor(node, editor) {
+    /** @type {!Element} */
     this.node = node;
+    /** @type {!Element} */
     this.modeInfoNode = document.createElement('span');
+    /** @type {!Element} */
     this.secInfoNode = document.createElement('span');
+    /** @type {!Element} */
     this.notifNode = document.createElement('span');
-    this.notifNode.className = 'vim-notification';
+    /** @type {!Element} */
     this.keyInfoNode = document.createElement('span');
+    /** @type {!monaco.editor.IStandaloneCodeEditor} */
+    this.editor = editor;
+
+    this.notifNode.className = 'vim-notification';
     this.keyInfoNode.setAttribute('style', 'float: right');
     this.node.appendChild(this.modeInfoNode);
     this.node.appendChild(this.secInfoNode);
     this.node.appendChild(this.notifNode);
     this.node.appendChild(this.keyInfoNode);
     this.toggleVisibility(false);
-    this.editor = editor;
   }
 
+  /**
+   * @param {!CustomEvent} ev
+   *
+   * Custom event has the form {{mode: string}} where the mode could be
+   * 'normal', 'insert', etc.
+   */
   setMode(ev) {
     if (ev.mode === 'visual' && ev.subMode === 'linewise') {
       this.setText('--VISUAL LINE--');
@@ -24,6 +41,9 @@ export default class VimStatusBar {
     this.setText(`--${ev.mode.toUpperCase()}--`);
   }
 
+  /**
+   * @param {string} key
+   */
   setKeyBuffer(key) {
     this.keyInfoNode.textContent = key;
   }
