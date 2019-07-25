@@ -42,12 +42,26 @@ export default class VimStatusBar {
   }
 
   /**
-   * @param {string} key
+   * @param {string} key A string representation of the Vim key sequences.
    */
   setKeyBuffer(key) {
     this.keyInfoNode.textContent = key;
   }
 
+  /**
+   * @param {string} text
+   * @param {function} callback
+   * @param {{
+   *    bottom: boolean,
+   *    desc: string,
+   *    onKeyDown: function,
+   *    onKeyUp: function(),
+   *    onClose: function(),
+   *    prefix: string,
+   *    selectValueOnOpen: boolean}} options,
+   *    value: string,
+   * }};
+   */
   setSec(text, callback, options) {
     this.notifNode.textContent = '';
     if (text === undefined) {
@@ -81,10 +95,16 @@ export default class VimStatusBar {
     return this.closeInput;
   }
 
+  /**
+   * @param {string} text
+   */
   setText(text) {
     this.modeInfoNode.textContent = text;
   }
 
+  /**
+   * @param {boolean} toggle
+   */
   toggleVisibility(toggle) {
     if (toggle) {
       this.node.style.display = 'block';
@@ -99,7 +119,10 @@ export default class VimStatusBar {
     clearInterval(this.notifTimeout);
   }
 
-  closeInput = () => {
+  /**
+   * @param {!Event} e
+   */
+  closeInput = (e) => {
     this.removeInputListeners();
     this.input = null;
     this.setSec('');
@@ -109,6 +132,9 @@ export default class VimStatusBar {
     }
   };
 
+  /**
+   * @param {!Event} e
+   */
   inputKeyUp = (e) => {
     const { options } = this.input;
     if (options && options.onKeyUp) {
@@ -116,7 +142,10 @@ export default class VimStatusBar {
     }
   };
 
-  inputBlur = () => {
+  /**
+   * @param {!Event} e
+   */
+  inputBlur = (e) => {
     const { options } = this.input;
 
     if (options.closeOnBlur) {
@@ -124,6 +153,9 @@ export default class VimStatusBar {
     }
   };
 
+  /**
+   * @param {!Event} e
+   */
   inputKeyDown = (e) => {
     const { options, callback } = this.input;
 
@@ -144,6 +176,9 @@ export default class VimStatusBar {
     }
   };
 
+  /**
+   * Adds keyboard and focus listeners from the user input box.
+   */
   addInputListeners() {
     const { node } = this.input;
     node.addEventListener('keyup', this.inputKeyUp);
@@ -152,6 +187,9 @@ export default class VimStatusBar {
     node.addEventListener('blur', this.inputBlur);
   }
 
+  /**
+   * Removes keyboard and focus listeners from the user input box.
+   */
   removeInputListeners() {
     if (!this.input || !this.input.node) {
       return;
@@ -164,6 +202,9 @@ export default class VimStatusBar {
     node.removeEventListener('blur', this.inputBlur);
   }
 
+  /**
+   * @param {string} text This text can contain HTML tags.
+   */
   showNotification(text) {
     const sp = document.createElement('span');
     sp.innerHTML = text;
